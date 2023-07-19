@@ -8,7 +8,7 @@ import sys
 sys.path.append('FAR3_libraries/')
 from launch_eigensolver_TK import *
 
-launch_num = 1 #number of simulations to launch
+launch_num = 2 #number of simulations to launch
 
 sh_name = "TJII_eigen.sh"
 
