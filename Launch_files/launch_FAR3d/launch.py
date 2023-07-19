@@ -1,0 +1,21 @@
+#!/usr/bin/env python
+# coding: utf-8
+
+# Developer: Luis Carlos Herrera Quesada
+# Date: 27/04/2023
+# Universidad Carlos III de Madrid
+
+import sys 
+sys.path.append('FAR3_libraries/')
+from launch_simulations import *
+
+launch_num = 16 #number of simulations to launch
+
+act_dir = os.listdir()
+files = sorted(list(filter(lambda act_dir: "efast" in act_dir, act_dir)))
+
+done = launch_sims(files,launch_num)
+
+
+
+
