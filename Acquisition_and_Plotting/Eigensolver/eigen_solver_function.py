@@ -7,6 +7,7 @@
 import pandas as pd 
 import numpy as np
 import matplotlib.pyplot as plt
+from plot_functions_TK import *
 
 
 # In[2]:
@@ -18,6 +19,45 @@ if not os.path.exists(saving_file):
 
 
 # In[3]:
+
+
+def plot_func_eigensolver(df,gf,sav_file,l):
+    get_ipython().run_line_magic('matplotlib', 'notebook')
+    
+    new_df = df.drop(columns="r/a")
+    gr,f = round(gf[0],2), round(gf[1],2)
+    k=0
+    tor_coupl = [5,9,13,17]
+    for n in tor_coupl:
+            d = get_colors_dict(n)
+            plt.axhline(0,xmin = 0.05, xmax = 0.06,color=d["colfam"],linewidth=2,label=f"n= {n}")                   
+            k += 1
+
+    for i in new_df.columns:
+        j=0
+        m = i.split("/")[0]
+
+        d = get_colors_dict(abs(int(m)))
+        cmap = mc.LinearSegmentedColormap.from_list("", d["colors"])
+
+        if int(m) >= 0:
+            plt.plot(df["r/a"],new_df[i],color=cmap(j/3))
+
+        elif int(m) < 0:
+            plt.plot(df["r/a"],new_df[i],"--",color=cmap(j/3))
+
+
+    plt.title(f"$\gamma$= {gr}/$f$(kHz)= {f}")
+    plt.xlabel("r/a")
+    plt.ylabel(r"$\delta \Phi$")
+    plt.rcParams['axes.labelsize'] = 22
+    plt.grid(True)
+    plt.legend(loc="upper right",prop={'size':18})
+    plt.savefig(f"{sav_file}/Eigenfunctions_{l}.png",dpi=350)
+    plt.show()
+
+
+# In[4]:
 
 
 def egn_df(egn_modes_files):
@@ -66,44 +106,36 @@ def egn_df(egn_modes_files):
             row += 1
 
         modes.insert(0,"r/a",radius)
-        modes.to_excel(f"{saving_file}/egn_functions_{k}.xlsx", index=False)
+        modes.to_excel(f"{saving_file}/egn_functions_{k+1}.xlsx", index=False)
 
 
-# In[4]:
+# In[5]:
 
 
 egn_modes = "egn_mode_asci.dat"
+egn_values = "egn_values.dat"
 egn_df(egn_modes)
 
 
-# In[10]:
+# In[6]:
 
 
-get_ipython().run_line_magic('matplotlib', 'notebook')
-#for col in modes.columns:
-plt.plot(modes["r/a"],modes["-5/3"])
-plt.plot(modes["r/a"],modes["-5/2"])
-plt.plot(modes["r/a"],modes["-9/7"])
-plt.plot(modes["r/a"],modes["-9/6"])
-plt.plot(modes["r/a"],modes["-9/5"])
-plt.plot(modes["r/a"],modes["-13/9"])
-plt.plot(modes["r/a"],modes["-13/8"])
-plt.plot(modes["r/a"],modes["-13/7"])
-plt.plot(modes["r/a"],modes["-17/12"])
-plt.plot(modes["r/a"],modes["-17/11"])
-plt.plot(modes["r/a"],modes["-17/10"])
+files = os.listdir(saving_file)
+files = sorted(list(filter(lambda files: ".xlsx" in files, files)))
 
-plt.plot(modes["r/a"],modes["5/-3"],"--")
-plt.plot(modes["r/a"],modes["5/-2"],"--")
-plt.plot(modes["r/a"],modes["9/-7"],"--")
-plt.plot(modes["r/a"],modes["9/-6"],"--")
-plt.plot(modes["r/a"],modes["9/-5"],"--")
-plt.plot(modes["r/a"],modes["13/-9"],"--")
-plt.plot(modes["r/a"],modes["13/-8"],"--")
-plt.plot(modes["r/a"],modes["13/-7"],"--")
-plt.plot(modes["r/a"],modes["17/-12"],"--")
-plt.plot(modes["r/a"],modes["17/-11"],"--")
-plt.plot(modes["r/a"],modes["17/-10"],"--")
+
+# In[7]:
+
+
+count = 0
+values_df = pd.read_fwf(egn_values,header=None,names=["Growth_rate","f(kHz)"])
+
+for file in files: 
+    df = pd.read_excel(f"{saving_file}/{file}")    
+    gf = values_df.values[count]
+    plot_func_eigensolver(df,gf,saving_file,count)
+    if count < 6:
+        count += 1 
 
 
 # In[ ]:
