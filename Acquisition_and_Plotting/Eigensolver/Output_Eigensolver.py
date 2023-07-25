@@ -16,6 +16,7 @@ egn_modes = "egn_mode_asci.dat"
 egn_values = "egn_values.dat"
 saving_file = "eigensolver_results"
 profile = "TJII_NBI.txt"
+image_files = 0
 
 for file in files:
     if os.path.isfile(f"{file}/{egn_modes}"):
@@ -26,22 +27,25 @@ for file in files:
         egn_df(f"{file}/{egn_modes}",file,saving_file)
 
         #List excel files created for plotting
-        excel_files = os.listdir(f"{file}/{saving_file}")
-        excel_files = sorted(list(filter(lambda excel_files: ".xlsx" in excel_files, excel_files)))
+        saved_files = os.listdir(f"{file}/{saving_file}")
+        excel_files = sorted(list(filter(lambda saved_files: ".xlsx" in saved_files, saved_files)))
+
+        if len(saved_files) > len(excel_files):
+            image_files = 1 
 
         count = 0
         values_df = pd.read_fwf(f"{file}/{egn_values}",header=None,names=["Growth_rate","f(kHz)"])
-
-        for e_file in excel_files: 
-            df = pd.read_excel(f"{file}/{saving_file}/{e_file}")    
-            gf = values_df.values[count]
-            gam, freq = gf[0], gf[1]
-            f, energy, beta = plasma_parameters(file,profile,freq)
-            f, energy, gam = round(abs(f),2), round(energy,0), round(gam,2)
-            print(f,energy,beta)
-            plot_func_eigensolver(df,gam,f,file,saving_file,count,energy,beta)
-            if count < 6:
-                count += 1 
+        
+        if image_files == 0:
+            for e_file in excel_files: 
+                df = pd.read_excel(f"{file}/{saving_file}/{e_file}")    
+                gf = values_df.values[count]
+                gam, freq = gf[0], gf[1]
+                f, energy, beta = plasma_parameters(file,profile,freq)
+                f, energy, gam = round(abs(f),2), round(energy,0), round(gam,2)
+                plot_func_eigensolver(df,gam,f,file,saving_file,count,energy,beta)
+                if count < 6:
+                    count += 1 
 
 
 
