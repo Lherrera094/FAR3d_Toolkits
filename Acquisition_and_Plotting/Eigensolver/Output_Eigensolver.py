@@ -18,6 +18,11 @@ saving_file = "eigensolver_results"
 profile = "TJII_NBI.txt"
 image_files = 0
 
+save_images = []
+count_images = []
+count_files = 0
+
+
 for file in files:
     if os.path.isfile(f"{file}/{egn_modes}"):
         if not os.path.exists(f"{file}/{saving_file}"):
@@ -47,7 +52,14 @@ for file in files:
                 if count < 6:
                     count += 1 
 
+        #Counts the number of images files 
+        images_in_files = os.listdir(f"{file}/{saving_file}/")
+        images_in_files = [filename for filename in images_in_files if not filename.endswith('.xlsx')]
+        images_in_files = [f"{file}/{saving_file}/" + filename for filename in images_in_files]
 
+        save_images.append(images_in_files)
+        count_images.append(len(images_in_files))
+        count_files += 1        
 
-
+eigenfunctions_map(save_images, count_images, count_files)
 

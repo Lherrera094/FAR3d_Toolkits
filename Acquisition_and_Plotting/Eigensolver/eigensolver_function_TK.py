@@ -9,11 +9,20 @@
 import pandas as pd 
 import numpy as np
 import matplotlib.pyplot as plt
+from PIL import Image
+import os
 from plot_functions_TK import *
+from output_eigenfunctions_TK import *
+from search_and_evaluate_TK import *
 
 
 def plot_func_eigensolver(df,gam,freq,file,sav_file,l,energy,beta):
 
+    df.rename(columns={"r/a":"Radius"}, inplace=True) 
+
+    dm, dm_r, dm2, dm_r2, dm3, dm_r3, alfmode, x_1, x_2, width = get_values(df)
+        
+    df.rename(columns={"Radius":"r/a"}, inplace=True)
     im = plt.figure(figsize=(9,8))   
     new_df = df.drop(columns="r/a")
     k=0
@@ -36,6 +45,8 @@ def plot_func_eigensolver(df,gam,freq,file,sav_file,l,energy,beta):
         elif int(m) < 0:
             plt.plot(df["r/a"],new_df[i],"--",color=cmap(j/3))
 
+    plt.axvline(dm_r/1000,color="red",linewidth=1)
+    plt.annotate(f"Dominant Mode (n/m): {dm}", xy=(0.55, 0.02), xycoords='axes fraction', fontsize = 15)
 
     plt.title(f"$T_f:{int(energy)}$keV/"+r"$\beta_f$"+f":{beta}/$\gamma$:{gam}/$f$(kHz):{freq}",fontsize=28)
     plt.xlabel("r/a")
@@ -154,4 +165,39 @@ def plasma_parameters(directory,profiles,frec):
     energy = mi*(cvfp*Va)**2/(e*1000)
     
     return f, energy, beta
+
+def eigenfunctions_map(directory, col_num, row_num):
+    images = []
+
+    for filename in directory:
+        for image_file in filename:
+            images.append(Image.open(image_file))
+
+    #Calculate the width and height of the output image
+    output_width = int(max(col_num)*(images[0].size[0]/2))
+    output_height = int(row_num*(images[0].size[1]/2))
+
+    #Create a new image
+    output_image = Image.new('RGB', (output_width, output_height))
+
+    # Loop through the images and paste them onto the output image
+    row_count,column_count = 0,0
+    x,i,j = 0,0,0   #x:image position for each column,i:image position for each column
+
+    for image in images:
+        if column_count == col_num[j]:
+            j += 1
+            column_count = 0
+            x = 0
+            i += int(output_height/row_num)
+
+        output_image.paste(image.resize((int(image.size[0]/2), 
+                                         int(image.size[1]/2))), (x, i))
+        x += int(image.size[0]/2)  #Position in x for the image
+        column_count += 1
+    
+    output_image.save("Eigenfunctions_Eigensolver.jpg")
+
+
+
 
