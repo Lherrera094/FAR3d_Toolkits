@@ -97,7 +97,7 @@ def get_colors_dict(n):
     
     return d[n]
 
-def plot_eigenfunctions(dm,dm2,dm3,alfm,rp,rp2,rp3,df,r,energy,beta,f,sav_file,tor_coupl, num_pol):
+def plot_eigenfunctions(dm,dm2,dm3,alfm,rp,rp2,rp3,df,r,energy,beta,f,sav_file,tor_coupl, num_pol,l):
     im = plt.figure(figsize=(9,8))
     i,j,k=0,0,0
 
@@ -149,11 +149,11 @@ def plot_eigenfunctions(dm,dm2,dm3,alfm,rp,rp2,rp3,df,r,energy,beta,f,sav_file,t
     plt.rcParams['axes.labelsize'] = 22
     plt.grid(True)
     plt.legend(loc="upper right",prop={'size':18})
-    plt.savefig(f"{sav_file}{round(energy)}_{beta}.png",dpi=350)
+    plt.savefig(f"{sav_file}{round(energy)}_{beta}v{l}.png",dpi=350)
 
 
 #Creates an array of sorted plots for panoramic visualization
-def eigenfunction_maps(directory):
+def eigenfunction_maps(directory,name):
     images = []
     
     #Arrange list in descending order for energy and ascending for beta
@@ -162,6 +162,7 @@ def eigenfunction_maps(directory):
          
     #Gets the number of energy plots for the array of images
     my_list = [f.split("_")[0] for f in act_dir]
+    print(my_list)
     unique_elements = sorted(set(my_list),reverse=True)
     columns = []
     for element in unique_elements:
@@ -200,10 +201,10 @@ def eigenfunction_maps(directory):
         x += int(image.size[0]/2)  #Position in x for the image
         column_count += 1    
         
-    output_image.save("Eigenfunctions_full.jpg")
+    output_image.save(f"{name}.jpg")
 
 
-def plot_squared_Potential(dm,dm2,alfm,rp,rp2,rp3,df,r,energy,beta,f,sav_file,tor_coupl, num_pol):
+def plot_squared_Potential(dm,dm2,alfm,rp,rp2,rp3,df,r,energy,beta,f,sav_file,tor_coupl, num_pol, l):
     im = plt.figure(figsize=(9,8))
     i,j,k=0,0,0
 
@@ -250,4 +251,4 @@ def plot_squared_Potential(dm,dm2,alfm,rp,rp2,rp3,df,r,energy,beta,f,sav_file,to
     plt.rcParams['axes.labelsize'] = 22
     plt.grid(True)
     plt.legend(loc="upper right",prop={'size':18})
-    plt.savefig(f"{sav_file}{round(energy)}_{beta}.png",dpi=350)
+    plt.savefig(f"{sav_file}{round(energy)}_{beta}v{l}.png",dpi=350)

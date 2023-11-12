@@ -1,6 +1,3 @@
-#!/usr/bin/env python
-# coding: utf-8
-# +
 # Developer: Luis Carlos Herrera Quesada
 # Date: 02/06/2023
 # Universidad Carlos III de Madrid
@@ -21,7 +18,6 @@ from search_and_evaluate_TK import *
 
 #Read all folders and create the folder to save the plots
 def create_files():
-    
     act_dir = os.listdir()
     folders = find_farprt(act_dir)
     file = sorted(folders)
@@ -35,12 +31,8 @@ def create_files():
     saving_file = "Eigenfunction_plots/" #Folder to save the eigenfunctions
     if not os.path.exists(saving_file):
         os.makedirs(saving_file)
-        
-    main_file = list(filter(lambda act_dir: "00_main" in act_dir, act_dir))
-    main_file = os.listdir(main_file[0])
-    txt = list(filter(lambda main_file: ".txt" in main_file, main_file))[0]
     
-    return results, file, txt, saving_file
+    return results, file, saving_file
 
 
 #From farprt and profiles.dat obtains the relevant plasma characteristics
